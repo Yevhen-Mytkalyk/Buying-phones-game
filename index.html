@@ -1,0 +1,1000 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Перекуп Телефонів</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: OLX-style classifieds. Dark teal header, filter rail + card grid, chat inbox as a two-pane view. */
+:root{
+  --bg:#eef1f2; --surface:#ffffff; --ink:#00282c; --muted:#58707a; --line:#d8e0e3;
+  --brand:#002f34; --brand-ink:#ffffff; --accent:#23e5db; --accent-ink:#002f34;
+  --good:#12814b; --warn:#b86b0c; --bad:#c23b3b;
+  --bub-me:#c6f4f0; --bub-them:#ffffff; --img-bg:#e3eaec; --chip:#e4ecee; --shadow:0 6px 20px rgba(0,47,52,.12);
+  --f-body:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-disp:'Unbounded','Onest',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1517; --surface:#13252a; --ink:#e7f3f3; --muted:#8fa9ae; --line:#24424a;
+  --brand:#071f23; --bub-me:#12504f; --bub-them:#1a3338; --img-bg:#1b3237; --chip:#1d363c; --shadow:0 6px 20px rgba(0,0,0,.4);
+  --good:#46c98a; --warn:#e6a04a; --bad:#ef7a7a; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0b1517; --surface:#13252a; --ink:#e7f3f3; --muted:#8fa9ae; --line:#24424a;
+  --brand:#071f23; --bub-me:#12504f; --bub-them:#1a3338; --img-bg:#1b3237; --chip:#1d363c; --shadow:0 6px 20px rgba(0,0,0,.4);
+  --good:#46c98a; --warn:#e6a04a; --bad:#ef7a7a; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;margin:0;min-height:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--brand);color:var(--brand-ink);padding-block:12px 0}
+.top-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-family:var(--f-disp);font-weight:700;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.logo i{display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--accent)}
+.search{flex:1 1 220px;min-width:0;display:flex;background:#fff;border-radius:8px;overflow:hidden}
+.search input{flex:1;min-width:0;border:0;padding:10px 12px;background:#fff;color:#00282c;outline-offset:-2px}
+.chips-top{display:flex;gap:8px;flex-wrap:wrap}
+.chip-top{background:rgba(255,255,255,.1);border-radius:8px;padding:7px 11px;font-size:13px;white-space:nowrap}
+.chip-top b{font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:4px;margin-top:10px;overflow-x:auto}
+nav.tabs button{background:none;border:0;color:rgba(255,255,255,.72);padding:11px 14px;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap;display:flex;gap:7px;align-items:center}
+nav.tabs button[aria-selected="true"]{color:#fff;border-color:var(--accent)}
+.badge{background:var(--accent);color:var(--accent-ink);border-radius:20px;font-size:11px;padding:1px 7px;font-weight:700}
+main{padding-block:18px 40px}
+h2{font-family:var(--f-disp);font-size:19px;margin:0 0 12px;letter-spacing:-.02em}
+h3{margin:0 0 8px;font-size:15px}
+.muted{color:var(--muted)}
+.btn{border:0;border-radius:8px;padding:10px 16px;font-weight:700;background:var(--brand);color:#fff}
+.btn.acc{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sm{padding:7px 11px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.market{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;align-items:start}
+.rail{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:14px}
+.rail label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{background:var(--chip);border:1.5px solid transparent;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+select,.num{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0;min-width:0;transition:box-shadow .15s,transform .15s}
+.card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.card .img{background:var(--img-bg);height:150px;display:flex;align-items:center;justify-content:center;position:relative}
+.card .img svg{height:128px;width:auto}
+.tag{position:absolute;top:8px;left:8px;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px}
+.card .body{padding:11px 12px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.price{font-family:var(--f-disp);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}
+.title{font-weight:600;overflow-wrap:anywhere}
+.meta{font-size:12.5px;color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{font-size:12px;font-weight:600;padding:2px 9px;border-radius:20px;background:var(--chip)}
+.pill.good{color:var(--good)} .pill.warn{color:var(--warn)} .pill.bad{color:var(--bad)}
+.batt{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.batt i{width:22px;height:10px;border:1.5px solid currentColor;border-radius:3px;position:relative;display:inline-block;overflow:hidden}
+.batt i::after{content:"";position:absolute;inset:0;width:var(--w);background:currentColor}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px}
+.stat b{display:block;font-family:var(--f-disp);font-size:18px;font-variant-numeric:tabular-nums}
+.bar{height:12px;background:var(--chip);border-radius:8px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--accent);border-radius:8px}
+.inv{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.inv .panel{display:flex;flex-direction:column;gap:10px}
+.inv .top{display:flex;gap:12px;align-items:center}
+.inv .top svg{height:70px;width:auto;background:var(--img-bg);border-radius:8px;padding:6px}
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}
+.pair{display:flex;gap:8px;align-items:center;justify-content:center}
+.modal figure{margin:0;text-align:center}
+.modal figcaption{font-size:12px;font-weight:600;color:var(--muted);margin-top:6px}
+.inv .pair{gap:4px;flex:none}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-size:14px;white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll-x{overflow-x:auto}
+.inbox{display:grid;grid-template-columns:320px minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;height:min(72vh,680px);min-height:420px}
+.clist{overflow-y:auto;border-right:1px solid var(--line)}
+.citem{display:flex;gap:10px;padding:12px;border:0;border-bottom:1px solid var(--line);background:none;width:100%;text-align:left;align-items:center}
+.citem[aria-current="true"]{background:var(--chip)}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex:none}
+.citem .tx{min-width:0;flex:1}
+.citem .tx div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+.thread{display:flex;flex-direction:column;min-width:0;min-height:0}
+.thead{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.thead .back{display:none}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.bub{max-width:80%;padding:8px 12px;border-radius:14px;overflow-wrap:anywhere}
+.bub.them{background:var(--bub-them);align-self:flex-start;border-bottom-left-radius:4px;border:1px solid var(--line)}
+.bub.me{background:var(--bub-me);align-self:flex-end;border-bottom-right-radius:4px}
+.bub.sys{align-self:center;background:var(--chip);font-size:13px;color:var(--muted);text-align:center;max-width:92%}
+.bub.sys.ok{color:var(--good);font-weight:600}
+.typing{align-self:flex-start;color:var(--muted);font-size:13px;padding:0 6px}
+.opts{border-top:1px solid var(--line);padding:10px;display:flex;flex-wrap:wrap;gap:8px;max-height:46%;overflow-y:auto;background:var(--surface)}
+.opt{background:var(--surface);border:1.5px solid var(--brand);color:var(--ink);border-radius:18px;padding:7px 13px;font-size:13.5px;font-weight:600;text-align:left}
+.opt:hover:not(:disabled){background:var(--brand);color:#fff}
+.opt.go{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.opt.no{border-color:var(--bad);color:var(--bad)}
+.opt:disabled{opacity:.4;cursor:not-allowed}
+.custom{display:flex;gap:6px;align-items:center;flex:1 1 260px}
+.custom input{flex:1;min-width:0;padding:7px 10px;border:1.5px solid var(--line);border-radius:18px;background:var(--surface)}
+.overlay{position:fixed;inset:0;background:rgba(0,20,24,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:var(--surface);border-radius:14px;max-width:560px;width:100%;max-height:92%;overflow-y:auto;padding:0 0 max(16px,env(safe-area-inset-bottom,0px))}
+.modal .img{background:var(--img-bg);display:flex;justify-content:center;padding:18px}
+.modal .img svg{height:200px;width:auto}
+.modal .in{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:600}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--brand);color:#fff;padding:10px 16px;border-radius:10px;box-shadow:var(--shadow);z-index:60;max-width:calc(100% - 32px);border:1px solid var(--accent)}
+@media (max-width:820px){
+  .market{grid-template-columns:minmax(0,1fr)}
+  .inbox{grid-template-columns:minmax(0,1fr);height:76vh}
+  .inbox .thread{display:none}
+  .inbox.show-thread .thread{display:flex}
+  .inbox.show-thread .clist{display:none}
+  .thead .back{display:inline-flex}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .card .img{height:120px} .card .img svg{height:100px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <div class="logo"><i></i>Перекуп</div>
+      <div class="search"><input id="q" type="search" placeholder="Пошук: iPhone 13, Samsung S24, Vivo X200…" autocomplete="off"></div>
+      <div class="chips-top"><div class="chip-top">Гаманець: <b id="hMoney">0 грн</b></div><div class="chip-top">День <b id="hDay">1</b></div></div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+<main><div class="wrap" id="view"></div></main>
+<div id="toast" hidden></div>
+<div id="ov" class="overlay" hidden></div>
+<script>
+/* ===== Дані ===== */
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.round(n).toLocaleString('uk-UA')+' грн';
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const ri=(a,b)=>Math.floor(rnd(a,b+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const r50=n=>Math.round(n/50)*50;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const MEM={
+  A:['4/64гб','6/128гб'],
+  B:['6/128гб','6/256гб','6/512гб'],
+  C:['8/128гб','8/256гб','8/512гб','8/1ТБ'],
+  D:['8/256гб','8/512гб','8/1ТБ','8/2ТБ'],
+  S:['6/128гб','8/256гб','12/512гб'],
+  X1:['8/128гб','8/256гб','8/512гб'],
+  X2:['12/256гб','12/512гб','12/1ТБ'],
+  X3:['12/128гб','12/256гб','12/512гб'],
+  X4:['12/256гб','12/512гб'],
+  X5:['12/256гб','12/512гб','16/1ТБ'],
+  X6:['12/256гб','16/512гб'],
+  X7:['16/512гб','16/1ТБ']
+};
+// [бренд, назва, мін, макс, набір памʼяті]
+const PHONES=[
+ ['iPhone','iPhone 8 Plus',4300,7600,'A'],
+ ['iPhone','iPhone X',6000,8100,'A'],
+ ['iPhone','iPhone XS',6000,8100,'A'],
+ ['iPhone','iPhone XS Max',6600,8700,'A'],
+ ['iPhone','iPhone 11',7000,10000,'A'],
+ ['iPhone','iPhone 11 Pro',7600,11200,'A'],
+ ['iPhone','iPhone 11 Pro Max',7800,11200,'A'],
+ ['iPhone','iPhone 12',7500,11000,'B'],
+ ['iPhone','iPhone 12 Pro',7900,11200,'B'],
+ ['iPhone','iPhone 12 Pro Max',8600,12700,'B'],
+ ['iPhone','iPhone 13',14300,18900,'B'],
+ ['iPhone','iPhone 13 Pro',16100,21000,'B'],
+ ['iPhone','iPhone 13 Pro Max',17200,24500,'B'],
+ ['iPhone','iPhone 14',14600,19000,'C'],
+ ['iPhone','iPhone 14 Pro',22100,28100,'C'],
+ ['iPhone','iPhone 14 Pro Max',24200,30100,'C'],
+ ['iPhone','iPhone 15',16200,23100,'C'],
+ ['iPhone','iPhone 15 Pro',26200,30000,'C'],
+ ['iPhone','iPhone 15 Pro Max',27000,31000,'C'],
+ ['iPhone','iPhone 16',27100,41000,'D'],
+ ['iPhone','iPhone 16 Pro',27800,42000,'D'],
+ ['iPhone','iPhone 16 Pro Max',27800,43700,'D'],
+ ['iPhone','iPhone 17',36000,48000,'D'],
+ ['iPhone','iPhone 17 Pro',39800,54000,'D'],
+ ['iPhone','iPhone 17 Pro Max',40000,61000,'D'],
+ ['iPhone','iPhone 18 Pro',64000,76000,'D'],
+ ['iPhone','iPhone 18 Pro Max',67000,81000,'D'],
+ ['Samsung','Samsung S21',7200,9600,'S'],
+ ['Samsung','Samsung S21 Ultra',16100,20000,'S'],
+ ['Samsung','Samsung S22 Ultra',17000,19000,'S'],
+ ['Samsung','Samsung S23',11100,13000,'S'],
+ ['Samsung','Samsung S23 Ultra',21800,28100,'S'],
+ ['Samsung','Samsung S24',19000,26000,'X1',70],
+ ['Samsung','Samsung S24 Ultra',21000,29800,'X2',70],
+ ['Samsung','Samsung S25',23000,31500,'X3',78],
+ ['Samsung','Samsung S25 Ultra',27200,34200,'X2',78],
+ ['Samsung','Samsung S26',27000,35600,'X4',85],
+ ['Samsung','Samsung S26 Ultra',27000,37000,'X5',85],
+ ['Samsung','Samsung S27',38100,61000,'X4',90],
+ ['Vivo','Vivo X200',15600,18900,'X6',70],
+ ['Vivo','Vivo X200 Pro',18900,21000,'X6',70],
+ ['Vivo','Vivo X200 Pro Mini',19100,23200,'X6',70],
+ ['Vivo','Vivo X300',34000,38600,'X6',85],
+ ['Vivo','Vivo X300 Pro',35100,38700,'X7',85],
+ ['Vivo','Vivo X300 Pro Mini',36200,41000,'X6',85]
+].map((p,i)=>({id:i,brand:p[0],name:p[1],min:p[2],max:p[3],mem:MEM[p[4]],bmin:p[5]||0}));
+
+const COND=[
+ {n:'Ідеальний',v:1,d:'Як новий, без слідів використання'},
+ {n:'Гарний',v:.72,d:'Дрібні подряпини на корпусі'},
+ {n:'Задовільний',v:.42,d:'Потертості та сколи на корпусі'},
+ {n:'Є дефекти',v:.15,d:'Глибокі подряпини та сколи, працює'}
+];
+const SCRD=['Без подряпин, як новий','Мікроподряпини, майже непомітні','Помітні подряпини','Тріщина або глибокі подряпини, працює'];
+const CITIES=['Київ','Львів','Дніпро','Одеса','Харків','Запоріжжя','Вінниця','Тернопіль','Чернівці','Полтава','Луцьк','Житомир'];
+const NAMES_M=['Андрій','Максим','Олег','Дмитро','Богдан','Тарас','Сергій','Ярослав','Влад','Роман','Іван','Артем'];
+const NAMES_F=['Олена','Марина','Катерина','Софія','Ірина','Оксана','Юлія','Наталя','Аня','Вікторія'];
+const AVC=['#2b6cb0','#2f855a','#b7791f','#9b2c2c','#6b46c1','#2c7a7b','#c05621','#4a5568'];
+const WIN_GOAL=100000, START_MONEY=15000;
+
+function fairPrice(s){
+  const m=PHONES[s.m];
+  const cv=(COND[s.cond].v+COND[s.scr==null?s.cond:s.scr].v)/2;
+  const f=.5*(s.batt-50)/50+.3*cv+.2*(s.mem/Math.max(1,m.mem.length-1));
+  return r50(m.min+(m.max-m.min)*f);
+}
+function genSpec(mid){
+  const m=PHONES[mid], newer=m.min>20000;
+  const bmin=m.bmin||(newer?78:50);
+  const mem=Math.min(m.mem.length-1,Math.floor(Math.pow(Math.random(),1.5)*m.mem.length));
+  const batt=ri(bmin,100);
+  const rc=()=>{const r=Math.random();return r<.22?0:r<.62?1:r<.88?2:3};
+  return {m:mid,mem,batt,cond:rc(),scr:rc()};
+}
+function specTitle(s){const m=PHONES[s.m];return m.name+' '+m.mem[s.mem]}
+
+/* ===== Стан ===== */
+const KEY='perekup-v1';
+let S=null;
+function newState(){
+  S={money:START_MONEY,day:1,uid:1,phones:[],listings:[],chats:[],log:[],stats:{bought:0,sold:0,profit:0,swaps:0},won:false};
+  refillMarket(24);
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{let t=localStorage.getItem(KEY);if(!t){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/perekup/i.test(k)){t=localStorage.getItem(k);break}}}if(t){S=JSON.parse(t);return true}}catch(e){}return false}
+const nid=()=>S.uid++;
+function migrate(){
+  const fix=sp=>{if(sp&&sp.scr==null)sp.scr=sp.cond};
+  (S.phones||[]).forEach(p=>fix(p.spec));
+  (S.listings||[]).forEach(l=>fix(l.spec));
+  (S.chats||[]).forEach(c=>fix(c.spec));
+  /* v4: обмін. Старі збереження доповнюються новими полями */
+  S.stats=S.stats||{bought:0,sold:0,profit:0};S.stats.swaps=S.stats.swaps||0;
+  (S.listings||[]).forEach(l=>{if(l.swap==null)l.swap=Math.random()<.55;if(l.swapOnly==null){l.swapOnly=Math.random()<.2;if(l.swapOnly)l.swap=true}});
+  (S.chats||[]).forEach(c=>{if(c.kind==='buy'&&c.st&&c.st.swap==null){const l=S.listings.find(x=>x.id===c.lid);c.st.swap=l?!!l.swap:false;c.st.sw=null;c.st.swTry=0}});
+  (S.chats||[]).forEach(c=>{if(c.kind==='buy'&&c.st&&c.st.swapOnly==null){const l=S.listings.find(x=>x.id===c.lid);c.st.swapOnly=l?!!l.swapOnly:false;if(c.st.swapOnly)c.st.swap=true}});
+}
+
+/* ===== Ринок ===== */
+function mkSeller(){
+  const f=Math.random()<.4;
+  return {name:pick(f?NAMES_F:NAMES_M),city:pick(CITIES),color:pick(AVC),f};
+}
+function mkListing(){
+  const mid=Math.floor(Math.pow(Math.random(),1.15)*PHONES.length);
+  const spec=genSpec(mid), fair=fairPrice(spec);
+  const hot=Math.random()<.22,so=Math.random()<.2;
+  const ask=r50(fair*(hot?rnd(.84,.96):rnd(1,1.22)));
+  const floor=Math.min(ask,r50(ask*rnd(.86,.96)));
+  return {id:nid(),spec,seller:mkSeller(),ask,floor,noHaggle:Math.random()<.28,patience:ri(3,5),hot,swap:so||Math.random()<.55,swapOnly:so,day:S.day};
+}
+function refillMarket(n){while(S.listings.length<n)S.listings.push(mkListing())}
+
+/* ===== Ремонт: АКБ і задня кришка ===== */
+const battCost=s=>r50(Math.max(300,(PHONES[s.m].min+PHONES[s.m].max)/2*.35));
+const backCost=s=>r50(clamp(400+PHONES[s.m].min*.04,600,1800));
+const avgPrice=s=>(PHONES[s.m].min+PHONES[s.m].max)/2;
+const scrCost=s=>r50(Math.max(600,avgPrice(s)*.6));
+const polBCost=s=>r50(backCost(s)*.6);
+const polSCost=s=>r50(Math.max(150,avgPrice(s)*.1));
+const polish=c=>c<=0?0:c===3?1:0;
+/* ===== Чати: логіка торгу ===== */
+function say(c,f,t){c.msgs.push({f,t});if(f==='them'&&!(S.tab==='chats'&&S.active===c.id))c.unread=true}
+const chatById=id=>S.chats.find(c=>c.id===id);
+function reply(c,fn){
+  c.busy=true;render();
+  setTimeout(()=>{c.busy=false;fn();save();render()},520);
+}
+function closeChat(c,sysText){c.status='closed';if(sysText)say(c,'sys',sysText)}
+
+/* --- Покупка --- */
+function openBuyChat(lid){
+  let c=S.chats.find(c=>c.kind==='buy'&&c.lid===lid&&c.status==='open');
+  if(!c){
+    const l=S.listings.find(x=>x.id===lid);if(!l)return;
+    c={id:nid(),kind:'buy',lid,title:specTitle(l.spec),who:l.seller,status:'open',unread:false,msgs:[],spec:l.spec,busy:false,
+       st:{cur:l.ask,floor:l.floor,noHaggle:l.noHaggle,patience:l.patience,greeted:false,askedH:false,askedD:false,locked:false,swap:!!l.swap,swapOnly:!!l.swapOnly,sw:null,swTry:0}};
+    S.chats.unshift(c);
+  }
+  c.unread=false;S.tab='chats';S.active=c.id;closeModal();save();render();
+}
+function buyOptions(c){
+  const st=c.st,o=[];
+  if(!st.greeted){o.push({k:'hello',t:'Добрий день! Оголошення ще актуальне?'});o.push({k:'leave',t:'Закрити діалог',cls:'no'});return o}
+  if(!st.askedH&&!st.locked&&!st.swapOnly)o.push({k:'askH',t:'Торг можливий?'});
+  if(!st.askedD)o.push({k:'defects',t:'Що з батареєю та дефектами?'});
+  if(!st.locked&&!st.swapOnly)[5,10,15,20].forEach(p=>{const v=r50(st.cur*(1-p/100));o.push({k:'offer',v,t:`Віддасте за ${fmt(v)}? (−${p}%)`,dis:v>S.money})});
+  const swp=st.sw&&S.phones.find(x=>x.uid===st.sw.uid);
+  if(swp){
+    const d=st.sw.diff;
+    o.push({k:'swapOk',t:'Згоден на обмін '+(d>0?'з доплатою '+fmt(d):d<0?'(вам доплатять '+fmt(-d)+')':'без доплати'),cls:'go',dis:d>S.money});
+    if(st.swTry<2)o.push({k:'swapH',t:'Оцініть мій телефон вище'});
+    if(st.swTry<3)o.push({k:'customSw'});
+    o.push({k:'swapNo',t:'Скасувати обмін',cls:'no'});
+  }else if(st.swap&&!S.phones.length&&st.swapOnly)o.push({k:'noop',t:'Для обміну потрібен свій телефон',dis:true});else if(st.swap)o.push({k:'swapPick'});
+  if(!st.swapOnly)o.push({k:'buy',t:`Беру за ${fmt(st.cur)}`,cls:'go',dis:st.cur>S.money});
+  if(!st.locked&&!st.swapOnly)o.push({k:'custom',max:st.cur});
+  o.push({k:'leave',t:'Дякую, не підходить',cls:'no'});
+  return o;
+}
+function buyAct(c,k,v){
+  const st=c.st;
+  if(c.busy||c.status!=='open')return;
+  if(k==='hello'){
+    say(c,'me','Добрий день! Оголошення ще актуальне?');st.greeted=true;
+    reply(c,()=>say(c,'them',pick(['Добрий день! Так, актуальне.','Привіт! Ще продаю, можна приїхати подивитись.','Вітаю, телефон у мене.'])+(st.swapOnly?' Продаю лише в обмін на інший телефон. Для розрахунку мій оцінений у '+fmt(st.cur)+'.':' Ціна '+fmt(st.cur)+'.')));
+  }else if(k==='askH'){
+    say(c,'me','Торг можливий?');st.askedH=true;
+    reply(c,()=>{
+      if(st.noHaggle){st.locked=true;say(c,'them',pick(['Ні, торгу немає. Ціна остаточна.','Вибачте, торг не обговорюється.']))}
+      else say(c,'them',pick(['Трохи можу поступитись, пропонуйте.','Для серйозного покупця можна торгуватись.']));
+    });
+  }else if(k==='defects'){
+    say(c,'me','Що зі станом батареї та корпусу?');st.askedD=true;
+    reply(c,()=>say(c,'them',`Батарея ${c.spec.batt}%. Корпус: ${COND[c.spec.cond].d.toLowerCase()}. Екран: ${SCRD[c.spec.scr].toLowerCase()}. Все працює, оригінал, без ремонтів.`));
+  }else if(k==='offer'||k==='customOffer'){
+    const o=r50(v);
+    if(!(o>0))return toast('Введи суму');
+    if(o>S.money)return toast('Не вистачає коштів на таку суму');
+    say(c,'me',`Може, віддасте за ${fmt(o)}?`);
+    reply(c,()=>sellerAnswers(c,o));
+  }else if(k==='swap'){
+    const p=S.phones.find(x=>x.uid===v);if(!p)return;
+    const val=swapVal(p),diff=st.cur-val;
+    say(c,'me',`Може, обміняємось? Пропоную мій ${specTitle(p.spec)}: батарея ${p.spec.batt}%, корпус — ${COND[p.spec.cond].n.toLowerCase()}, екран — ${COND[p.spec.scr].n.toLowerCase()}.`);
+    reply(c,()=>{
+      if(Math.abs(diff)>st.cur*SW_TOL)say(c,'them',diff>0?'Ваш телефон помітно дешевший за мій, різниця завелика для обміну. Потрібен варіант ближчий за ціною.':'Ваш телефон помітно дорожчий за мій, стільки доплачувати я не готовий. Пропонуйте щось ближче за ціною.');
+      else{
+        st.sw={uid:p.uid,val,diff,fp:fairPrice(p.spec),min:r50(diff-st.cur*rnd(.02,.06))};
+        say(c,'them',`Оцінюю ваш у ${fmt(val)}, мій ${fmt(st.cur)}. `+(diff>0?`Влаштує обмін із вашою доплатою ${fmt(diff)}?`:diff<0?`Я доплачу вам ${fmt(-diff)}. Згодні?`:'Ціна однакова, міняємось без доплати?'));
+      }
+    });
+  }else if(k==='swapH'){
+    say(c,'me','Може, оціните мій телефон трохи вище?');st.swTry++;
+    reply(c,()=>{
+      const sw=st.sw;if(!sw)return;
+      if(Math.random()<.55){const od=sw.diff;sw.val=r50(sw.val+st.cur*rnd(.02,.05));sw.diff=st.cur-sw.val;if(sw.min!=null)sw.min-=od-sw.diff;say(c,'them',`Гаразд, оцінюю в ${fmt(sw.val)}. `+(sw.diff>0?`Доплата ${fmt(sw.diff)}.`:sw.diff<0?`Я доплачу ${fmt(-sw.diff)}.`:'Без доплати.'))}
+      else say(c,'them','Ні, це чесна оцінка.');
+    });
+  }else if(k==='swapNo'){
+    say(c,'me','Давайте без обміну.');st.sw=null;
+    reply(c,()=>say(c,'them','Добре.'));
+  }else if(k==='swapOk'){
+    say(c,'me','Згоден, міняємось.');
+    reply(c,()=>finishSwap(c));
+  }else if(k==='buy'){
+    say(c,'me',`Беру за ${fmt(st.cur)}`);
+    reply(c,()=>finishBuy(c,st.cur));
+  }else if(k==='leave'){
+    say(c,'me','Дякую, мені не підходить.');
+    reply(c,()=>closeChat(c,'Діалог закрито.'));
+  }
+}
+function sellerAnswers(c,o){
+  const st=c.st;
+  if(st.noHaggle){
+    st.locked=true;
+    return say(c,'them',`Ціна остаточна, торгу немає. Забирайте за ${fmt(st.cur)} або шукайте інший варіант.`);
+  }
+  if(o>=st.cur)return finishBuy(c,st.cur);
+  if(o>=st.floor){
+    say(c,'them',pick(['Ну добре, віддам за '+fmt(o)+'.','Домовились, '+fmt(o)+'. Коли зустрінемось?']));
+    return finishBuy(c,o);
+  }
+  st.patience-=(o<st.floor*.8?2:1);
+  if(st.patience<=0){
+    st.locked=true;
+    st.cur=Math.max(st.floor,Math.min(st.cur,r50(st.floor+(st.cur-st.floor)*.2)));
+    return say(c,'them',`Все, нижче не можу. Остання ціна ${fmt(st.cur)}, торгу більше не буде.`);
+  }
+  let n=Math.max(st.floor,r50(st.cur-(st.cur-o)*.4));
+  if(n>=st.cur)n=Math.max(st.floor,st.cur-50);
+  st.cur=n;
+  say(c,'them',(o<st.floor*.8?'Це якось несерйозно. ':'')+`Можу поступитись до ${fmt(n)}. Влаштує?`);
+}
+function finishBuy(c,price){
+  const l=S.listings.find(x=>x.id===c.lid);
+  if(!l)return closeChat(c,'Оголошення вже неактуальне.');
+  if(S.money<price)return say(c,'sys','Не вистачає коштів для цієї угоди.');
+  S.money-=price;
+  S.phones.push({uid:nid(),spec:c.spec,paid:price,listed:null,day:S.day});
+  S.listings=S.listings.filter(x=>x.id!==l.id);
+  S.stats.bought++;
+  S.chats.forEach(o=>{if(o!==c&&o.kind==='buy'&&o.lid===l.id&&o.status==='open')closeChat(o,'Оголошення вже неактуальне.')});
+  c.status='deal';
+  say(c,'sys',`Угоду завершено: ${c.title} за ${fmt(price)}. Телефон у розділі «Мої телефони».`);
+  c.msgs[c.msgs.length-1].ok=1;
+  toast('Куплено: '+c.title);
+  refillMarket(24);
+}
+
+const swapVal=p=>r50(fairPrice(p.spec)*.93);
+function swapOffer(c,uid,x){
+  const st=c.st;if(c.busy||c.status!=='open')return;
+  const p=S.phones.find(q=>q.uid===uid);if(!p)return;
+  const val=swapVal(p);let diff=st.cur-val;
+  const min=Math.max(r50(diff-st.cur*rnd(.02,.06)),-r50(st.cur*SW_TOL));
+  if(x!=null&&x>S.money)return toast('Не вистачає коштів на таку доплату');
+  diff=Math.max(diff,min);
+  say(c,'me',`Може, обміняємось? Пропоную мій ${specTitle(p.spec)}: батарея ${p.spec.batt}%, корпус — ${COND[p.spec.cond].n.toLowerCase()}, екран — ${COND[p.spec.scr].n.toLowerCase()}.`+(x==null?'':x>0?` Готовий доплатити ${fmt(x)}.`:x<0?` Прошу доплатити мені ${fmt(-x)}.`:' Без доплати.'));
+  st.sw={uid:p.uid,val,diff,fp:fairPrice(p.spec),min};
+  if(x!=null)st.swTry++;
+  reply(c,()=>{
+    if(x!=null&&x>=min){st.sw.diff=x;say(c,'them','Домовились, міняємось.');finishSwap(c);return}
+    if(x!=null){st.sw.diff=Math.max(min,r50(diff-(diff-x)*.4));say(c,'them',(st.swTry>=3?'Це моя остання пропозиція: ':'Трохи поступлюсь: ')+(st.sw.diff>0?`ваша доплата ${fmt(st.sw.diff)}.`:st.sw.diff<0?`я доплачу ${fmt(-st.sw.diff)}.`:'без доплати.'));return}
+    say(c,'them',`Оцінюю ваш у ${fmt(val)}, мій ${fmt(st.cur)}. `+(diff>0?`Влаштує обмін із вашою доплатою ${fmt(diff)}?`:diff<0?`Я доплачу вам ${fmt(-diff)}. Згодні?`:'Ціна однакова, міняємось без доплати?'));
+  });
+}
+const SW_TOL=.15;
+function swapCustom(c,x){
+  const st=c.st;
+  if(c.busy||c.status!=='open')return;
+  if(c.kind==='buy'){
+    const sw=st.sw;if(!sw)return;
+    if(x>S.money)return toast('Не вистачає коштів на таку доплату');
+    const mn=sw.min==null?sw.diff:sw.min;
+    say(c,'me',x>0?`Давайте з моєю доплатою ${fmt(x)}.`:x<0?`Давайте так, щоб ви доплатили мені ${fmt(-x)}.`:'Давайте без доплати.');
+    st.swTry++;
+    reply(c,()=>{
+      if(x>=mn){sw.diff=x;say(c,'them','Домовились, міняємось.');finishSwap(c)}
+      else{
+        sw.diff=Math.max(mn,r50(sw.diff-(sw.diff-x)*.4));
+        say(c,'them',(st.swTry>=3?'Це моя остання пропозиція: ':'Трохи поступлюсь: ')+(sw.diff>0?`ваша доплата ${fmt(sw.diff)}.`:sw.diff<0?`я доплачу ${fmt(-sw.diff)}.`:'без доплати.'));
+      }
+    });
+  }else{
+    if(!st.swapMode)return;
+    if(x<0&&-x>S.money)return toast('Не вистачає коштів на таку доплату');
+    say(c,'me',x>0?`Мене влаштує обмін із вашою доплатою ${fmt(x)}.`:x<0?`Мене влаштує обмін, я доплачу ${fmt(-x)}.`:'Давайте без доплати.');
+    st.tries++;
+    const mx=st.maxDiff==null?st.diff:st.maxDiff;
+    reply(c,()=>{
+      if(x<=mx){st.diff=x;st.bval=st.ask-x;say(c,'them','Домовились, міняємось.');finishSwapSell(c)}
+      else{
+        st.diff=Math.min(mx,r50(st.diff+(x-st.diff)*.4));st.bval=st.ask-st.diff;
+        say(c,'them',(st.tries>=3?'Це мій максимум: ':'Можу трохи додати: ')+(st.diff>0?`я доплачу ${fmt(st.diff)}.`:st.diff<0?`ви доплатите ${fmt(-st.diff)}.`:'без доплати.'));
+      }
+    });
+  }
+}
+function mkSwapSpec(ask){
+  for(let i=0;i<40;i++){const spec=genSpec(Math.floor(Math.random()*PHONES.length)),val=swapVal({spec});if(Math.abs(ask-val)<=ask*SW_TOL)return {spec,val}}
+  return null;
+}
+function finishSwapSell(c){
+  const st=c.st,p=S.phones.find(x=>x.uid===c.puid);
+  if(!p)return closeChat(c,'Телефон уже продано.');
+  if(st.diff<0&&-st.diff>S.money)return say(c,'sys','Не вистачає коштів на доплату.');
+  S.money+=st.diff;
+  S.phones=S.phones.filter(x=>x.uid!==p.uid);
+  S.phones.push({uid:nid(),spec:st.bspec,paid:Math.max(0,p.paid-st.diff),listed:null,day:S.day});
+  S.stats.swaps=(S.stats.swaps||0)+1;
+  S.chats.forEach(o=>{
+    if(o===c)return;
+    if(o.kind==='sell'&&o.puid===p.uid&&o.status==='open')closeChat(o,'Телефон уже обміняно.');
+    else if(o.kind==='buy'&&o.status==='open'&&o.st.sw&&o.st.sw.uid===p.uid)o.st.sw=null;
+  });
+  c.status='deal';
+  say(c,'sys',`Обмін завершено: ${c.title} → ${specTitle(st.bspec)}`+(st.diff>0?`, вам доплатили ${fmt(st.diff)}.`:st.diff<0?`, ви доплатили ${fmt(-st.diff)}.`:'.')+' Новий телефон у розділі «Мої телефони».');
+  c.msgs[c.msgs.length-1].ok=1;
+  toast('Обмін: '+specTitle(st.bspec));
+  checkWin();
+}
+function finishSwap(c){
+  const st=c.st,sw=st.sw,l=S.listings.find(x=>x.id===c.lid),p=sw&&S.phones.find(x=>x.uid===sw.uid);
+  if(!l)return closeChat(c,'Оголошення вже неактуальне.');
+  if(!p||fairPrice(p.spec)!==sw.fp){st.sw=null;return say(c,'sys','Стан або наявність телефона змінились. Запропонуй обмін знову.')}
+  if(sw.diff>S.money)return say(c,'sys','Не вистачає коштів на доплату.');
+  S.money-=sw.diff;
+  S.phones=S.phones.filter(x=>x.uid!==p.uid);
+  S.phones.push({uid:nid(),spec:c.spec,paid:Math.max(0,p.paid+sw.diff),listed:null,day:S.day});
+  S.listings=S.listings.filter(x=>x.id!==l.id);
+  S.stats.swaps=(S.stats.swaps||0)+1;
+  S.chats.forEach(o=>{
+    if(o===c)return;
+    if(o.kind==='buy'&&o.lid===l.id&&o.status==='open')closeChat(o,'Оголошення вже неактуальне.');
+    else if(o.kind==='sell'&&o.puid===p.uid&&o.status==='open')closeChat(o,'Телефон уже обміняно.');
+    else if(o.kind==='buy'&&o.status==='open'&&o.st.sw&&o.st.sw.uid===p.uid)o.st.sw=null;
+  });
+  c.status='deal';
+  say(c,'sys',`Обмін завершено: ${specTitle(p.spec)} → ${c.title}`+(sw.diff>0?`, ви доплатили ${fmt(sw.diff)}.`:sw.diff<0?`, вам доплатили ${fmt(-sw.diff)}.`:'.')+' Новий телефон у розділі «Мої телефони».');
+  c.msgs[c.msgs.length-1].ok=1;
+  toast('Обмін: '+c.title);
+  refillMarket(24);
+}
+
+/* --- Продаж --- */
+function listPhone(uid,price){
+  const p=S.phones.find(x=>x.uid===uid);if(!p)return;
+  price=r50(price);
+  if(!(price>=500))return toast('Вкажи ціну від 500 грн');
+  p.listed=price;
+  S.chats.forEach(c=>{if(c.kind==='sell'&&c.puid===uid&&c.status==='open')closeChat(c,'Ціну змінено, діалог закрито.')});
+  rollBuyers(p,1);
+  save();render();
+  toast('Оголошення опубліковано: '+fmt(price));
+}
+function unlistPhone(uid){
+  const p=S.phones.find(x=>x.uid===uid);if(!p)return;
+  p.listed=null;
+  S.chats.forEach(c=>{if(c.kind==='sell'&&c.puid===uid&&c.status==='open')closeChat(c,'Оголошення знято з продажу.')});
+  save();render();
+}
+function rollBuyers(p,tries){
+  const ratio=p.listed/fairPrice(p.spec);
+  const prob=clamp(1.15-(ratio-.9)*2.4,.05,1);
+  for(let i=0;i<tries;i++)if(Math.random()<prob*(i?.45:1))spawnBuyer(p);
+}
+function spawnBuyer(p){
+  if(S.chats.filter(c=>c.kind==='sell'&&c.puid===p.uid&&c.status==='open').length>=2)return;
+  const fair=fairPrice(p.spec),maxPay=r50(fair*rnd(.9,1.12)),ask=p.listed;
+  const ready=ask<=maxPay&&Math.random()<.3;
+  const offer=ready?ask:Math.min(ask,r50(Math.min(maxPay,ask*rnd(.8,.93))));
+  const c={id:nid(),kind:'sell',puid:p.uid,title:specTitle(p.spec),who:mkSeller(),status:'open',unread:true,msgs:[],spec:p.spec,busy:false,
+           st:{ask,maxPay,patience:ri(2,4),locked:false,offer,ready,rounds:0}};
+  say(c,'them',pick(['Добрий день!','Вітаю!','Привіт!'])+' '+pick(['Ще продаєте','Оголошення актуальне,','Дивлюсь ваш']) +' '+c.title+'?');
+  const sw=Math.random()<.5?mkSwapSpec(ask):null;
+  if(sw){
+    const d=ask-sw.val;
+    Object.assign(c.st,{swapMode:true,bspec:sw.spec,bval:sw.val,diff:d,tries:0,maxDiff:r50(d+ask*rnd(.02,.06))});
+    say(c,'them',`Можу запропонувати обмін на мій ${specTitle(sw.spec)}: батарея ${sw.spec.batt}%, корпус — ${COND[sw.spec.cond].n.toLowerCase()}, екран — ${COND[sw.spec.scr].n.toLowerCase()}. Оцінюю його в ${fmt(sw.val)}, ваш — ${fmt(ask)}. `+(d>0?`Я доплачу ${fmt(d)}.`:d<0?`Ви доплатите ${fmt(-d)}.`:'Без доплати.'));
+  }
+  else if(ready)say(c,'them',`Беру за вашу ціну, ${fmt(ask)}. Коли можна забрати?`);
+  else say(c,'them',`Віддасте за ${fmt(offer)}?`);
+  S.chats.unshift(c);
+  toast('Нове повідомлення: '+c.title);
+}
+function sellOptions(c){
+  const st=c.st,o=[];
+  if(st.swapMode){
+    const d=st.diff;
+    o.push({k:'swapAccept',t:'Згоден на обмін '+(d>0?'(вам доплатять '+fmt(d)+')':d<0?'з вашою доплатою '+fmt(-d):'без доплати'),cls:'go',dis:d<0&&-d>S.money});
+    if(st.tries<2)o.push({k:'swapMore',t:'Прошу більшу доплату'});
+    if(st.tries<3)o.push({k:'customSw'});
+    o.push({k:'swapCash',t:'Тільки за гроші'});
+    o.push({k:'decline',t:'Вибачте, вже не актуально',cls:'no'});
+    return o;
+  }
+  o.push({k:'accept',t:`Згоден, віддаю за ${fmt(st.offer)}`,cls:'go'});
+  if(!st.ready&&!st.locked){
+    const a=st.ask,x=st.offer;
+    const cs=[...new Set([r50(a-(a-x)*.3),r50((a+x)/2)])].filter(v=>v>x&&v<=a);
+    cs.forEach(v=>o.push({k:'counter',v,t:`Знижу до ${fmt(v)}`}));
+    o.push({k:'custom',max:a,min:x});
+    o.push({k:'final',t:'Ціна остаточна, торгу немає'});
+  }
+  o.push({k:'decline',t:'Вибачте, вже не актуально',cls:'no'});
+  return o;
+}
+function sellAct(c,k,v){
+  const st=c.st;
+  if(c.busy||c.status!=='open')return;
+  if(k==='accept'){
+    say(c,'me',`Згоден, віддаю за ${fmt(st.offer)}.`);
+    reply(c,()=>{say(c,'them','Чудово! Підʼїжджаю, зустрінемось і розрахуємось.');finishSell(c,st.offer)});
+  }else if(k==='counter'||k==='customCounter'){
+    const x=r50(v);
+    if(!(x>0))return toast('Введи суму');
+    if(x>st.ask)return toast('Не можна просити більше, ніж у оголошенні: '+fmt(st.ask));
+    say(c,'me',`Можу зробити ${fmt(x)}.`);
+    st.ask=x;
+    reply(c,()=>buyerAnswers(c,x));
+  }else if(k==='swapAccept'){
+    say(c,'me','Згоден на обмін.');
+    reply(c,()=>{say(c,'them','Чудово, зустрічаємось і міняємось.');finishSwapSell(c)});
+  }else if(k==='swapMore'){
+    say(c,'me','Може, доплатите трохи більше?');st.tries++;
+    reply(c,()=>{
+      if(Math.random()<.5){
+        const up=r50(st.ask*rnd(.02,.05))||50;st.diff+=up;st.bval-=up;if(st.maxDiff!=null)st.maxDiff=Math.max(st.maxDiff,st.diff);
+        say(c,'them','Добре, нехай буде так: '+(st.diff>0?`я доплачу ${fmt(st.diff)}.`:st.diff<0?`ви доплатите ${fmt(-st.diff)}.`:'без доплати.'));
+      }else say(c,'them','Ні, це моя межа.');
+    });
+  }else if(k==='swapCash'){
+    say(c,'me','Мені підходить лише за гроші.');
+    reply(c,()=>{
+      if(st.ask<=st.maxPay&&Math.random()<.5){st.swapMode=false;st.offer=Math.min(st.ask,r50(Math.min(st.maxPay,st.ask*rnd(.8,.93))));say(c,'them',`Добре, тоді за гроші. Віддасте за ${fmt(st.offer)}?`)}
+      else closeChat(c,'Покупець пішов: «Тоді не підходить. Бувайте!»');
+    });
+  }else if(k==='final'){
+    say(c,'me','Ціна остаточна, торгу немає.');
+    reply(c,()=>{
+      if(st.ask<=st.maxPay&&Math.random()<.55){say(c,'them','Ну добре, беру за вашу ціну.');finishSell(c,st.ask)}
+      else closeChat(c,'Покупець пішов: «Тоді не підходить. Бувайте!»');
+    });
+  }else if(k==='decline'){
+    say(c,'me','Вибачте, вже не актуально.');
+    reply(c,()=>{say(c,'them','Зрозуміло, дякую.');closeChat(c)});
+  }
+}
+function buyerAnswers(c,x){
+  const st=c.st;
+  if(x<=st.offer){say(c,'them',`Домовились, беру за ${fmt(x)}.`);return finishSell(c,x)}
+  if(x<=st.maxPay){
+    if(Math.random()<.72||st.rounds>=2){say(c,'them',pick(['Добре, згоден.','Влаштовує, беру.'])+` ${fmt(x)}.`);return finishSell(c,x)}
+    st.rounds++;
+    st.offer=Math.min(x-50,r50((st.offer+x)/2));
+    return say(c,'them',`Майже. Давайте за ${fmt(st.offer)}?`);
+  }
+  st.rounds++;st.patience--;
+  if(st.patience<=0||st.offer>=st.maxPay){
+    st.locked=true;
+    st.offer=Math.min(st.ask,r50(st.maxPay*rnd(.97,1)));
+    return say(c,'them',`Це мій максимум: ${fmt(st.offer)}. Більше не підніму. Беру чи ні?`);
+  }
+  st.offer=Math.min(st.ask,st.maxPay,Math.max(st.offer,r50(st.offer+(x-st.offer)*.45)));
+  say(c,'them',`Дорого. Можу піднятись до ${fmt(st.offer)}. Влаштовує?`);
+}
+function finishSell(c,price){
+  const p=S.phones.find(x=>x.uid===c.puid);
+  if(!p)return closeChat(c,'Телефон уже продано.');
+  S.money+=price;
+  const profit=price-p.paid;
+  S.log.unshift({title:c.title,paid:p.paid,sold:price,day:S.day});
+  S.log=S.log.slice(0,30);
+  S.stats.sold++;S.stats.profit+=profit;
+  S.phones=S.phones.filter(x=>x.uid!==p.uid);
+  S.chats.forEach(o=>{if(o!==c&&o.kind==='sell'&&o.puid===p.uid&&o.status==='open')closeChat(o,'Телефон уже продано іншому покупцю.')});
+  c.status='deal';
+  say(c,'sys',`Продано: ${c.title} за ${fmt(price)} (${profit>=0?'+':'−'}${fmt(Math.abs(profit))} до ціни покупки).`);
+  c.msgs[c.msgs.length-1].ok=1;
+  toast('Продано за '+fmt(price));
+  checkWin();
+}
+function pawn(uid){
+  const p=S.phones.find(x=>x.uid===uid);if(!p)return;
+  const price=r50(fairPrice(p.spec)*.72);
+  S.money+=price;
+  S.log.unshift({title:specTitle(p.spec)+' (скупка)',paid:p.paid,sold:price,day:S.day});
+  S.stats.sold++;S.stats.profit+=price-p.paid;
+  S.chats.forEach(c=>{if(c.kind==='sell'&&c.puid===uid&&c.status==='open')closeChat(c,'Телефон уже продано.')});
+  S.phones=S.phones.filter(x=>x.uid!==uid);
+  save();render();toast('Скупка заплатила '+fmt(price));checkWin();
+}
+const capital=()=>S.money+S.phones.reduce((a,p)=>a+fairPrice(p.spec),0);
+function checkWin(){if(!S.won&&capital()>=WIN_GOAL){S.won=true;toast('Ціль досягнута: капітал '+fmt(capital())+'!')}}
+
+/* --- День --- */
+function nextDay(){
+  S.day++;
+  const gone=[];
+  S.listings=S.listings.filter(l=>{if(Math.random()<.22){gone.push(l.id);return false}return true});
+  S.chats.forEach(c=>{
+    if(c.kind==='buy'&&c.status==='open'&&gone.includes(c.lid)){closeChat(c,'Оголошення неактуальне: телефон продано іншому.');c.unread=true}
+    else if(c.kind==='sell'&&c.status==='open'&&Math.random()<.4){say(c,'them','Я вже купив інший, дякую.');closeChat(c)}
+  });
+  refillMarket(24);
+  S.phones.filter(p=>p.listed).forEach(p=>rollBuyers(p,2));
+  save();render();
+  toast('День '+S.day+(S.chats.some(c=>c.unread)?': є нові повідомлення':''));
+}
+
+/* --- Ремонт --- */
+const COSTF={batt:battCost,back:backCost,scr:scrCost,polB:polBCost,polS:polSCost};
+function repair(uid,what){
+  const p=S.phones.find(x=>x.uid===uid);if(!p)return;
+  const s=p.spec,cost=COSTF[what](s);
+  if(what==='batt'&&s.batt>=100)return toast('Батарея вже на 100%');
+  if((what==='back'||what==='polB')&&s.cond===0)return toast('Корпус вже в ідеальному стані');
+  if((what==='scr'||what==='polS')&&s.scr===0)return toast('Екран вже в ідеальному стані');
+  if(S.money<cost)return toast('Не вистачає коштів: потрібно '+fmt(cost));
+  S.money-=cost;p.paid+=cost;
+  let msg;
+  if(what==='batt'){s.batt=100;s.newBatt=1;msg='Нова батарея: 100%'}
+  else if(what==='back'){s.cond=0;s.back=1;msg='Новий корпус'}
+  else if(what==='scr'){s.scr=0;s.newScr=1;msg='Новий екран'}
+  else if(what==='polB'){s.cond=polish(s.cond);msg='Корпус відполіровано: '+COND[s.cond].n}
+  else{s.scr=polish(s.scr);msg='Екран відполіровано: '+COND[s.scr].n}
+  S.chats.forEach(c=>{if(c.kind==='sell'&&c.puid===uid&&c.status==='open')closeChat(c,'Стан телефона змінився, діалог закрито. Напиши нову ціну в оголошенні.')});
+  if(p.listed)p.listed=null;
+  save();render();
+  toast(msg+', '+fmt(cost));
+}
+/* ===== Інтерфейс ===== */
+const F={brand:'all',model:'all',sort:'new',q:''};
+let toastT=null,confirmReset=false;
+function toast(t){
+  const el=$('#toast');el.textContent=t;el.hidden=false;
+  clearTimeout(toastT);toastT=setTimeout(()=>{el.hidden=true},2600);
+}
+function phoneSvgOld(spec,seed){
+  const m=PHONES[spec.m],sam=m.brand==='Samsung',pro=/Pro|Ultra/.test(m.name);
+  const cols=sam?['#1d1f24','#d8d4ee','#c8c4a2','#2e4a3b']:['#1f2024','#e8e5e0','#3b5b7c','#b9aada','#d8b6ae','#4b6b57'];
+  const col=cols[(seed*7+spec.m)%cols.length];
+  const old=/8 Plus|iPhone X|XS/.test(m.name)&&!sam;
+  let lens='';
+  const L=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#101215" stroke="#8b8f96" stroke-width="1.4"/><circle cx="${x}" cy="${y}" r="${r*.4}" fill="#2a3a52"/>`;
+  if(sam){const n=/Ultra/.test(m.name)?4:3;for(let i=0;i<n;i++)lens+=L(20,20+i*17,6)}
+  else if(pro)lens=`<rect x="8" y="8" width="46" height="46" rx="12" fill="rgba(255,255,255,.14)"/>`+L(22,22,8)+L(22,42,8)+L(41,32,8);
+  else if(old)lens=`<rect x="8" y="8" width="34" height="18" rx="9" fill="rgba(255,255,255,.14)"/>`+L(18,17,6)+L(32,17,6);
+  else lens=`<rect x="8" y="8" width="38" height="38" rx="11" fill="rgba(255,255,255,.14)"/>`+L(19,19,8)+L(35,35,8);
+  let wear='';
+  if(spec.cond===1)wear='<path d="M30 120l16-4" stroke="rgba(255,255,255,.18)" stroke-width=".8" fill="none"/>';
+  else if(spec.cond===2)wear='<path d="M60 90l18-6M22 130l24-3M70 40l6 14" stroke="rgba(255,255,255,.35)" stroke-width="1" fill="none"/>';
+  else if(spec.cond===3)wear='<path d="M78 8l-18 38 12 10-20 40 16 8-14 36" stroke="rgba(255,255,255,.75)" stroke-width="1.3" fill="none"/><path d="M60 46l-16-6M72 56l14 4" stroke="rgba(255,255,255,.55)" stroke-width="1" fill="none"/>';
+  const logo=sam?'':'<circle cx="50" cy="92" r="7" fill="rgba(255,255,255,.3)"/>';
+  return `<svg viewBox="0 0 100 160" role="img" aria-label="${esc(m.name)}"><rect x="2" y="2" width="96" height="156" rx="16" fill="${col}"/><rect x="2" y="2" width="96" height="156" rx="16" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="2"/>${lens}${logo}${wear}</svg>`;
+}
+function frontSvgOld(spec,seed){
+  const m=PHONES[spec.m],sam=m.brand==='Samsung',c=spec.scr==null?spec.cond:spec.scr;
+  const n=parseInt((m.name.match(/\d+/)||[0])[0]);
+  const home=/8 Plus/.test(m.name),isl=!sam&&!home&&(n>=15||(n===14&&/Pro/.test(m.name)));
+  const walls=['#2b5876','#6b3fa0','#1f6f5b','#b24a5a','#3a3f8f'];
+  const w=walls[(seed*5+spec.m)%walls.length];
+  const y0=home?16:6,h=home?118:148;
+  let top='';
+  if(sam)top='<circle cx="50" cy="13" r="3" fill="#000"/>';
+  else if(isl)top='<rect x="38" y="11" width="24" height="7" rx="3.5" fill="#000"/>';
+  else if(!home)top='<rect x="32" y="6" width="36" height="9" rx="4" fill="#000"/>';
+  const btn=home?'<circle cx="50" cy="146" r="6" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>':'';
+  let wear='';
+  if(c===1)wear='<path d="M30 70l22-9M62 112l16-5" stroke="rgba(255,255,255,.18)" stroke-width=".8" fill="none"/>';
+  else if(c===2)wear='<path d="M18 52l30-12M40 100l38-10M24 124l22-6M62 70l14-4M70 128l12-3" stroke="rgba(255,255,255,.4)" stroke-width="1" fill="none"/>';
+  else if(c===3)wear='<path d="M80 24l-22 34 14 12-26 34 18 10-12 30" stroke="rgba(255,255,255,.85)" stroke-width="1.4" fill="none"/><path d="M58 58l-20-8M72 70l16 6M46 104l-18 4M64 114l16 10" stroke="rgba(255,255,255,.6)" stroke-width="1" fill="none"/>';
+  return `<svg viewBox="0 0 100 160" role="img" aria-label="${esc(m.name)}, екран"><rect x="2" y="2" width="96" height="156" rx="16" fill="#15161a"/><rect x="2" y="2" width="96" height="156" rx="16" fill="none" stroke="rgba(120,125,135,.5)" stroke-width="2"/><rect x="6" y="${y0}" width="88" height="${h}" rx="${home?4:12}" fill="${w}"/><circle cx="36" cy="${y0+h-28}" r="28" fill="rgba(255,255,255,.12)"/><circle cx="70" cy="${y0+40}" r="22" fill="rgba(0,0,0,.18)"/><text x="50" y="${y0+46}" text-anchor="middle" font-size="18" font-weight="600" fill="#fff" fill-opacity=".9" font-family="sans-serif">9:41</text>${top}${btn}${wear}</svg>`;
+}
+/* ===== Реальний вигляд нових моделей (камери, кольори, форма екрана) ===== */
+const MET='#c5c8cd';
+const SAM_S24=['#26272b','#b8b6b3','#b4a7d3','#e0c47c'];            /* Onyx Black, Marble Gray, Cobalt Violet, Amber Yellow */
+const SAM_S24U=['#8d8c89','#2a2a2c','#8f84a3','#cbb98c'];          /* титан: Gray, Black, Violet, Yellow */
+const SAM_S25=['#b7cfe6','#b4dcc8','#2c3652','#c8cbd0'];           /* Icyblue, Mint, Navy, Silver Shadow */
+const SAM_S25U=['#a9b4c4','#2b2c2f','#8f9094','#dedede'];          /* Titanium Silverblue, Black, Gray, Whitesilver */
+const SAM_S26=['#b3a6d6','#a9cbe8','#222326','#f0efed'];           /* Cobalt Violet, Sky Blue, Black, White */
+const DES={
+ 'Samsung S24':{t:'sep',n:3,rx:12,cols:SAM_S24,fr:'#a7a7ab',ring:'#5a5d63'},
+ 'Samsung S24 Ultra':{t:'sep',n:4,rx:8,cols:SAM_S24U,fr:'#a2a2a5',ring:'#6b6e74',ti:1},
+ 'Samsung S25':{t:'sep',n:3,rx:14,cols:SAM_S25,fr:'#aeb1b6',ring:'#5a5d63'},
+ 'Samsung S25 Ultra':{t:'sep',n:4,rx:15,cols:SAM_S25U,fr:'#a9acb2',ring:'#6b6e74',ti:1},
+ 'Samsung S26':{t:'isl',rx:19,cols:SAM_S26,fr:'#b4b7bc'},
+ 'Samsung S26 Ultra':{t:'sep',n:4,rx:18,cols:SAM_S26,fr:'#b4b7bc',ring:'#c3c6cc',thin:1},
+ 'Samsung S27':{t:'isl',rx:19,cols:SAM_S26,fr:'#b4b7bc'},
+ 'Vivo X200':{t:'vivo',R:24,rx:16,cols:['#1c1d21','#a9c2ad','#3f6c9e'],fr:'#9a9da3',cx:50},
+ 'Vivo X200 Pro':{t:'vivo',R:31,rx:16,cols:['#1b1c20','#8f9090','#3d6a9e','#eeeeee'],fr:'#8d9096',cx:50,pro:1},
+ 'Vivo X200 Pro Mini':{t:'vivo',R:25,rx:16,cols:['#e8bfd0','#b9d6bd','#efefef','#1d1e22'],fr:'#a7aaaf',cx:50},
+ 'Vivo X300':{t:'vivo',R:27,rx:15,cols:['#a9c6e0','#efc9d4','#1d1e22'],fr:'#a7aaaf',cx:50,fl:1},
+ 'Vivo X300 Pro':{t:'vivo',R:32,rx:15,cols:['#3e3f43','#d9c7ac','#1d1e22'],fr:'#8d9096',cx:50,pro:1,fl:1},
+ 'Vivo X300 Pro Mini':{t:'vivo',R:26,rx:15,cols:['#b9d6bd','#efc9d4','#efefef','#1d1e22'],fr:'#a7aaaf',cx:50,fl:1}
+};
+const wearBack=c=>c===1?'<path d="M30 120l16-4" stroke="rgba(255,255,255,.18)" stroke-width=".8" fill="none"/>'
+ :c===2?'<path d="M60 90l18-6M22 130l24-3M70 40l6 14" stroke="rgba(255,255,255,.35)" stroke-width="1" fill="none"/>'
+ :c===3?'<path d="M78 8l-18 38 12 10-20 40 16 8-14 36" stroke="rgba(255,255,255,.75)" stroke-width="1.3" fill="none"/><path d="M60 46l-16-6M72 56l14 4" stroke="rgba(255,255,255,.55)" stroke-width="1" fill="none"/>':'';
+const wearFront=c=>c===1?'<path d="M30 70l22-9M62 112l16-5" stroke="rgba(255,255,255,.18)" stroke-width=".8" fill="none"/>'
+ :c===2?'<path d="M18 52l30-12M40 100l38-10M24 124l22-6M62 70l14-4M70 128l12-3" stroke="rgba(255,255,255,.4)" stroke-width="1" fill="none"/>'
+ :c===3?'<path d="M80 24l-22 34 14 12-26 34 18 10-12 30" stroke="rgba(255,255,255,.85)" stroke-width="1.4" fill="none"/><path d="M58 58l-20-8M72 70l16 6M46 104l-18 4M64 114l16 10" stroke="rgba(255,255,255,.6)" stroke-width="1" fill="none"/>':'';
+const LENS=(x,y,r,ring,w)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#0c0d10" stroke="${ring}" stroke-width="${w}"/><circle cx="${x}" cy="${y}" r="${r*.62}" fill="#17202e"/><circle cx="${x}" cy="${y}" r="${r*.3}" fill="#2c4263"/><circle cx="${x-r*.28}" cy="${y-r*.28}" r="${r*.12}" fill="rgba(255,255,255,.55)"/>`;
+function backNew(d,col){
+  let o='';
+  if(d.t==='sep'){
+    const ys=d.n===4?[22,40,58,76]:[24,45,66],r=d.n===4?7.4:8.4,x=24;
+    ys.forEach(y=>o+=LENS(x,y,r,d.ring,d.thin?1:2));
+    o+=`<circle cx="42" cy="${ys[0]+1}" r="2.8" fill="#f1ead2" stroke="${d.ring}" stroke-width="1"/><circle cx="42" cy="${ys[1]}" r="1.8" fill="#14151a"/>`;
+    if(d.n===4)o+=`<circle cx="42" cy="${ys[2]}" r="1.6" fill="#14151a"/>`;
+  }else if(d.t==='isl'){
+    o+=`<rect x="8" y="9" width="34" height="76" rx="17" fill="rgba(255,255,255,.12)" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/>`;
+    [27,47,67].forEach(y=>o+=LENS(25,y,8,'#7d8087',1.6));
+    o+=`<circle cx="55" cy="22" r="2.8" fill="#f1ead2" stroke="#8b8f96" stroke-width="1"/><circle cx="55" cy="33" r="1.7" fill="#14151a"/>`;
+  }else{
+    const R=d.R,cx=d.cx,cy=R+11,lr=R*.3;
+    o+=`<circle cx="${cx}" cy="${cy}" r="${R+2.5}" fill="rgba(0,0,0,.22)"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="#0d0e11" stroke="${MET}" stroke-width="${d.pro?3:2.4}"/><circle cx="${cx}" cy="${cy}" r="${R-4.5}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1"/>`;
+    [[cx,cy-R*.42],[cx-R*.4,cy+R*.3],[cx+R*.4,cy+R*.3]].forEach(p=>o+=LENS(p[0],p[1],lr,'#565a62',1.5));
+    if(d.fl)o+=`<circle cx="${cx-R-7}" cy="${cy-3}" r="2.6" fill="#f1ead2" stroke="#8b8f96" stroke-width="1"/>`;
+    else o+=`<circle cx="${cx+R*.05}" cy="${cy+R*.78}" r="1.8" fill="#f1ead2"/>`;
+  }
+  return o;
+}
+function phoneSvgNew(spec,seed,d){
+  const col=d.cols[(seed*7+spec.m)%d.cols.length];
+  const m=PHONES[spec.m];
+  return `<svg viewBox="0 0 100 160" role="img" aria-label="${esc(m.name)}"><rect x="2" y="2" width="96" height="156" rx="${d.rx}" fill="${col}"/>${d.t==='vivo'?`<rect x="2" y="2" width="96" height="156" rx="${d.rx}" fill="rgba(255,255,255,.07)"/>`:''}<rect x="2" y="2" width="96" height="156" rx="${d.rx}" fill="none" stroke="${d.fr}" stroke-width="${d.ti?3:2.2}"/>${backNew(d,col)}${wearBack(spec.cond)}</svg>`;
+}
+function frontSvgNew(spec,seed,d){
+  const m=PHONES[spec.m],c=spec.scr==null?spec.cond:spec.scr;
+  const walls=['#2b5876','#6b3fa0','#1f6f5b','#b24a5a','#3a3f8f'];
+  const w=walls[(seed*5+spec.m)%walls.length];
+  const vivo=d.t==='vivo',bz=vivo?3.6:5.2,sr=Math.max(4,d.rx-(vivo?2:3)),hy=vivo?9:11.5;
+  const sw=100-2*bz,sh=160-2*bz;
+  const curve=vivo?`<rect x="${bz}" y="${bz}" width="${sw}" height="${sh}" rx="${sr}" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.4"/>`:'';
+  return `<svg viewBox="0 0 100 160" role="img" aria-label="${esc(m.name)}, екран"><rect x="2" y="2" width="96" height="156" rx="${d.rx}" fill="#0c0d10"/><rect x="2" y="2" width="96" height="156" rx="${d.rx}" fill="none" stroke="${d.fr}" stroke-width="${d.ti?3:2.2}"/><rect x="${bz}" y="${bz}" width="${sw}" height="${sh}" rx="${sr}" fill="${w}"/>${curve}<circle cx="36" cy="124" r="28" fill="rgba(255,255,255,.12)"/><circle cx="70" cy="46" r="22" fill="rgba(0,0,0,.18)"/><text x="50" y="52" text-anchor="middle" font-size="18" font-weight="600" fill="#fff" fill-opacity=".9" font-family="sans-serif">9:41</text><circle cx="50" cy="${hy}" r="${vivo?2.6:3}" fill="#000"/>${wearFront(c)}</svg>`;
+}
+const phoneSvg=(spec,seed)=>{const d=DES[PHONES[spec.m].name];return d?phoneSvgNew(spec,seed,d):phoneSvgOld(spec,seed)};
+const frontSvg=(spec,seed)=>{const d=DES[PHONES[spec.m].name];return d?frontSvgNew(spec,seed,d):frontSvgOld(spec,seed)};
+
+const photos=(sp,seed)=>`<div class="pair">${phoneSvg(sp,seed)}${frontSvg(sp,seed)}</div>`;
+const condPillL=(c,l)=>`<span class="pill ${c===0?'good':c===1?'':c===2?'warn':'bad'}">${l}: ${COND[c].n}</span>`;
+const repBtns=p=>{
+  const s=p.spec;
+  const B=(w,t,cost,dis)=>`<button class="btn ghost sm" data-act="repair" data-w="${w}" data-uid="${p.uid}" ${dis||S.money<cost?'disabled':''}>${t}: ${fmt(cost)}</button>`;
+  return `<div class="row">${B('batt','Замінити АКБ',battCost(s),s.batt>=100)}${B('back','Новий корпус',backCost(s),s.cond===0)}${B('scr','Новий екран',scrCost(s),s.scr===0)}</div><div class="row">${B('polB','Полірування корпусу',polBCost(s),s.cond===0)}${B('polS','Полірування екрана',polSCost(s),s.scr===0)}</div>`;
+};
+const battHtml=b=>`<span class="batt ${b>=85?'':b>=70?'':''}" style="color:${b>=85?'var(--good)':b>=70?'var(--warn)':'var(--bad)'}"><i style="--w:${b}%"></i>${b}%</span>`;
+const condPill=c=>`<span class="pill ${c===0?'good':c===1?'':c===2?'warn':'bad'}">${COND[c].n}</span>`;
+const ago=d=>{const n=S.day-d;return n<=0?'Сьогодні':n===1?'Вчора':n+' дн. тому'};
+const unreadN=()=>S.chats.filter(c=>c.unread).length;
+
+function renderHeader(){
+  $('#hMoney').textContent=fmt(S.money);
+  $('#hDay').textContent=S.day;
+  const tabs=[['market','Оголошення',0],['mine','Мої телефони',S.phones.length],['chats','Повідомлення',unreadN()],['stats','Огляд',0]];
+  $('#tabs').innerHTML=tabs.map(t=>`<button role="tab" aria-selected="${S.tab===t[0]}" data-act="tab" data-t="${t[0]}">${t[1]}${t[2]?`<span class="badge">${t[2]}</span>`:''}</button>`).join('');
+}
+
+/* --- Ринок --- */
+function viewMarket(){
+  let L=S.listings.filter(l=>{
+    const m=PHONES[l.spec.m];
+    if(F.brand!=='all'&&m.brand!==F.brand)return false;
+    if(F.model!=='all'&&String(l.spec.m)!==F.model)return false;
+    if(F.q){const h=(specTitle(l.spec)+' '+l.seller.city).toLowerCase();if(!F.q.toLowerCase().split(/\s+/).every(w=>h.includes(w)))return false}
+    return true;
+  });
+  L.sort((a,b)=>F.sort==='cheap'?a.ask-b.ask:F.sort==='exp'?b.ask-a.ask:b.id-a.id);
+  const models=PHONES.filter(m=>F.brand==='all'||m.brand===F.brand);
+  const rail=`<aside class="rail" aria-label="Фільтри">
+    <div><label>Бренд</label><div class="seg">${['all','iPhone','Samsung','Vivo'].map(b=>`<button aria-pressed="${F.brand===b}" data-act="brand" data-v="${b}">${b==='all'?'Усі':b}</button>`).join('')}</div></div>
+    <div><label for="fModel">Модель</label><select id="fModel" data-act="model"><option value="all">Усі моделі</option>${models.map(m=>`<option value="${m.id}" ${String(m.id)===F.model?'selected':''}>${m.name}</option>`).join('')}</select></div>
+    <div><label for="fSort">Сортування</label><select id="fSort" data-act="sort"><option value="new" ${F.sort==='new'?'selected':''}>Спочатку нові</option><option value="cheap" ${F.sort==='cheap'?'selected':''}>Спочатку дешевші</option><option value="exp" ${F.sort==='exp'?'selected':''}>Спочатку дорожчі</option></select></div>
+    <p class="meta" style="margin:0">Ціна залежить від батареї, стану корпусу та памʼяті. Оцінюй сам і торгуйся.</p>
+  </aside>`;
+  const cards=L.length?`<div class="grid">${L.map(l=>`<button class="card" data-act="open" data-id="${l.id}" aria-label="${esc(specTitle(l.spec))}, ${fmt(l.ask)}">
+    <div class="img">${l.hot?'<span class="tag">Терміново</span>':''}${photos(l.spec,l.id)}</div>
+    <div class="body"><div class="price">${fmt(l.ask)}</div><div class="title">${esc(specTitle(l.spec))}</div>
+    <div class="row">${battHtml(l.spec.batt)}${l.swap?`<span class="pill">${l.swapOnly?'⇄ Тільки обмін':'⇄ Обмін'}</span>`:''}</div><div class="meta">Корпус: ${COND[l.spec.cond].n}<br>Екран: ${COND[l.spec.scr].n}</div>
+    <div class="meta">${l.seller.city} · ${ago(l.day)}</div></div></button>`).join('')}</div>`
+    :`<div class="panel empty">Нічого не знайдено. Змін фільтри або перейди на наступний день.</div>`;
+  return `<h2>Телефони поруч <span class="muted" style="font-family:var(--f-body);font-size:14px;font-weight:500">${L.length} оголошень</span></h2><div class="market">${rail}<div style="min-width:0">${cards}</div></div>`;
+}
+function openModal(id){
+  const l=S.listings.find(x=>x.id===id);if(!l)return;
+  const m=PHONES[l.spec.m],ex=S.chats.some(c=>c.kind==='buy'&&c.lid===id&&c.status==='open');
+  const ov=$('#ov');
+  ov.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-label="${esc(specTitle(l.spec))}">
+    <div class="img"><div class="pair"><figure>${phoneSvg(l.spec,l.id)}<figcaption>Корпус</figcaption></figure><figure>${frontSvg(l.spec,l.id)}<figcaption>Екран</figcaption></figure></div></div>
+    <div class="in">
+      <div><div class="price" style="font-size:22px">${fmt(l.ask)}</div><h3 style="margin:2px 0 0;font-size:17px">${esc(specTitle(l.spec))}</h3></div>
+      <dl class="kv"><dt>Памʼять (ОЗП/ПЗП)</dt><dd>${m.mem[l.spec.mem]}</dd><dt>Батарея</dt><dd>${battHtml(l.spec.batt)}</dd><dt>Корпус</dt><dd>${COND[l.spec.cond].n}: ${COND[l.spec.cond].d.toLowerCase()}</dd><dt>Екран</dt><dd>${COND[l.spec.scr].n}: ${SCRD[l.spec.scr].toLowerCase()}</dd><dt>Продавець</dt><dd>${l.seller.name}, ${l.seller.city}</dd><dt>Опубліковано</dt><dd>${ago(l.day)}</dd><dt>Обмін</dt><dd>${l.swap?(l.swapOnly?'Тільки обмін, за гроші не продає':'Можливий, доплату визначаєте самі'):'Не розглядається'}</dd><dt>Ціни на модель</dt><dd>${fmt(m.min)} – ${fmt(m.max)}</dd></dl>
+      <div class="row"><button class="btn acc" data-act="chatListing" data-id="${l.id}">${ex?'Відкрити діалог':'Написати продавцю'}</button><button class="btn ghost" data-act="close">Закрити</button></div>
+    </div></div>`;
+  ov.hidden=false;
+}
+function closeModal(){const o=$('#ov');o.hidden=true;o.innerHTML=''}
+
+/* --- Мої телефони --- */
+function viewMine(){
+  if(!S.phones.length)return `<h2>Мої телефони</h2><div class="panel empty">У тебе поки немає телефонів. Знайди вигідне оголошення, поторгуйся і купи.<br><br><button class="btn acc" data-act="tab" data-t="market">До оголошень</button></div>`;
+  return `<h2>Мої телефони</h2><div class="inv">${S.phones.map(p=>{
+    const m=PHONES[p.spec.m],n=S.chats.filter(c=>c.kind==='sell'&&c.puid===p.uid&&c.status==='open').length;
+    const def=p.listed||r50(p.paid*1.15);
+    return `<div class="panel"><div class="top">${photos(p.spec,p.uid)}<div style="min-width:0"><div class="title">${esc(specTitle(p.spec))}</div><div class="row">${battHtml(p.spec.batt)}${p.spec.newBatt?'<span class="pill good">Нова АКБ</span>':''}${p.spec.back?'<span class="pill good">Новий корпус</span>':''}${p.spec.newScr?'<span class="pill good">Новий екран</span>':''}</div><div class="row">${condPillL(p.spec.cond,'Корпус')}${condPillL(p.spec.scr,'Екран')}</div><div class="meta">Витрати на телефон ${fmt(p.paid)}, день ${p.day}</div></div></div>
+      <div class="meta">Ціни на модель: ${fmt(m.min)} – ${fmt(m.max)}</div>
+      ${p.listed?`<div class="row"><span class="pill good">В продажу: ${fmt(p.listed)}</span>${n?`<span class="pill">Діалогів: ${n}</span>`:''}</div>`:''}
+      <div class="row"><input class="num" style="flex:1;min-width:110px;width:auto" id="pi-${p.uid}" type="number" inputmode="numeric" min="500" step="50" value="${def}" aria-label="Ціна, грн">
+        <button class="btn acc sm" data-act="list" data-uid="${p.uid}">${p.listed?'Змінити ціну':'Виставити'}</button></div>
+      ${repBtns(p)}
+      <div class="row">${p.listed?`<button class="btn ghost sm" data-act="unlist" data-uid="${p.uid}">Зняти з продажу</button>`:''}<button class="btn ghost sm" data-act="pawn" data-uid="${p.uid}">У скупку за ${fmt(fairPrice(p.spec)*.72)}</button></div>
+    </div>`}).join('')}</div>`;
+}
+
+/* --- Повідомлення --- */
+function viewChats(){
+  const cur=S.active?chatById(S.active):null;
+  const list=S.chats.length?S.chats.map(c=>{
+    const last=c.msgs[c.msgs.length-1];
+    return `<button class="citem" data-act="chat" data-id="${c.id}" aria-current="${cur&&cur.id===c.id}"><span class="av" style="background:${c.who.color}">${c.who.name[0]}</span>
+      <span class="tx"><div><b>${c.who.name}</b> <span class="pill">${c.kind==='buy'?'Купую':'Продаю'}</span></div><div class="meta">${esc(c.title)}</div><div class="meta">${last?esc(last.t):'Напиши першим'}</div></span>${c.unread?'<span class="dot" aria-label="Нове"></span>':c.status==='deal'?'<span class="pill good">✓</span>':''}</button>`}).join('')
+    :`<div class="empty">Діалогів немає.<br>Напиши продавцю або виставити телефон на продаж.</div>`;
+  let thread=`<div class="empty" style="margin:auto">Обери діалог зліва</div>`;
+  if(cur){
+    const st=cur.status;
+    const msgs=cur.msgs.map(m=>`<div class="bub ${m.f}${m.ok?' ok':''}">${esc(m.t)}</div>`).join('')+(cur.busy?'<div class="typing">друкує…</div>':'');
+    let opts='';
+    if(st==='open'&&!cur.busy){
+      const arr=cur.kind==='buy'?buyOptions(cur):sellOptions(cur);
+      opts=`<div class="opts">${arr.map(o=>o.k==='custom'
+        ?`<div class="custom"><input type="number" inputmode="numeric" id="cu-${cur.id}" placeholder="Своя ціна, грн" min="0" step="50" aria-label="Своя ціна"><button class="opt" data-act="custom" data-cid="${cur.id}">${cur.kind==='buy'?'Запропонувати':'Знизити до'}</button></div>`
+        :o.k==='swapPick'?`<div class="custom" style="flex-wrap:wrap;flex-basis:100%"><select id="sp-${cur.id}" aria-label="Мій телефон для обміну" style="flex:1 1 100%">${S.phones.map(p=>`<option value="${p.uid}">${esc(specTitle(p.spec))}, АКБ ${p.spec.batt}% (≈${fmt(fairPrice(p.spec))})</option>`).join('')}</select><input type="number" inputmode="numeric" id="sx-${cur.id}" placeholder="Моя доплата, грн (мінус — мені доплатять; порожньо — як оцінить продавець)" step="50" aria-label="Моя доплата"><button class="opt" data-act="swapOffer" data-cid="${cur.id}" ${S.phones.length?'':'disabled'}>Запропонувати обмін</button></div>`
+        :o.k==='customSw'?`<div class="custom"><input type="number" inputmode="numeric" id="cs-${cur.id}" placeholder="${cur.kind==='buy'?'Моя доплата, грн (мінус — мені доплатять)':'Доплата покупця, грн (мінус — я доплачу)'}" step="50" aria-label="Своя доплата"><button class="opt" data-act="customSw" data-cid="${cur.id}">Запропонувати</button></div>`
+        :`<button class="opt ${o.cls||''}" ${o.dis?'disabled title="Не вистачає коштів"':''} data-act="opt" data-cid="${cur.id}" data-k="${o.k}" data-v="${o.v||''}">${esc(o.t)}</button>`).join('')}</div>`;
+    }else if(st!=='open')opts=`<div class="opts"><span class="muted">${st==='deal'?'Угоду завершено.':'Діалог закрито.'}</span></div>`;
+    thread=`<div class="thead"><button class="btn ghost sm back" data-act="back" aria-label="Назад">←</button><span class="av" style="background:${cur.who.color}">${cur.who.name[0]}</span><div style="min-width:0"><b>${cur.who.name}</b> <span class="muted">${cur.who.city}</span><div class="meta">${cur.kind==='buy'?'Продає':'Хоче купити'}: ${esc(cur.title)}</div></div></div><div class="msgs" id="msgs">${msgs||'<div class="empty" style="margin:auto">Напиши першим</div>'}</div>${opts}`;
+  }
+  return `<h2>Повідомлення</h2><div class="inbox ${cur?'show-thread':''}"><div class="clist">${list}</div><div class="thread">${thread}</div></div>`;
+}
+
+/* --- Огляд --- */
+function viewStats(){
+  const cap=capital(),inv=cap-S.money,pct=clamp(cap/WIN_GOAL*100,0,100);
+  const log=S.log.length?`<div class="scroll-x"><table><thead><tr><th>День</th><th>Телефон</th><th class="n">Куплено</th><th class="n">Продано</th><th class="n">Прибуток</th></tr></thead><tbody>${S.log.map(l=>{const pr=l.sold-l.paid;return `<tr><td>${l.day}</td><td>${esc(l.title)}</td><td class="n">${fmt(l.paid)}</td><td class="n">${fmt(l.sold)}</td><td class="n" style="color:${pr>=0?'var(--good)':'var(--bad)'}">${pr>=0?'+':'−'}${fmt(Math.abs(pr))}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="muted">Угод ще не було.</div>';
+  return `<h2>Огляд</h2>
+  <div class="stats"><div class="panel stat"><span class="meta">Готівка</span><b>${fmt(S.money)}</b></div><div class="panel stat"><span class="meta">Телефони (оцінка)</span><b>${fmt(inv)}</b></div><div class="panel stat"><span class="meta">Капітал</span><b>${fmt(cap)}</b></div><div class="panel stat"><span class="meta">Прибуток з угод</span><b style="color:${S.stats.profit>=0?'var(--good)':'var(--bad)'}">${S.stats.profit>=0?'+':'−'}${fmt(Math.abs(S.stats.profit))}</b></div><div class="panel stat"><span class="meta">Куплено / продано</span><b>${S.stats.bought} / ${S.stats.sold}</b></div><div class="panel stat"><span class="meta">Обмінів</span><b>${S.stats.swaps||0}</b></div></div>
+  <div class="panel" style="margin-bottom:16px"><h3>Ціль: капітал ${fmt(WIN_GOAL)}</h3><div class="bar" role="progressbar" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></div><p class="meta" style="margin:8px 0 0">${S.won?'Ціль досягнута. Можна грати далі.':'Купуй дешево, продавай дорожче. Скупка забирає телефон за 72% від ринкової вартості.'}</p></div>
+  <div class="panel" style="margin-bottom:16px"><h3>Останні угоди</h3>${log}</div>
+  <div class="panel" style="margin-bottom:16px"><h3>Перенесення збереження</h3><p class="meta" style="margin:0 0 8px">Експортуй збереження зі старої версії або встав код сюди й натисни «Імпорт».</p><textarea id="sv" rows="3" style="width:100%;padding:8px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);font:12px monospace" aria-label="Код збереження"></textarea><div class="row" style="margin-top:8px"><button class="btn ghost sm" data-act="exp">Експорт</button><button class="btn acc sm" data-act="imp">Імпорт</button></div></div>
+  <div class="row">${confirmReset?`<button class="btn" style="background:var(--bad)" data-act="reset2">Так, почати з нуля</button><button class="btn ghost" data-act="resetNo">Скасувати</button>`:`<button class="btn ghost" data-act="reset">Нова гра</button>`}</div>`;
+}
+
+function render(){
+  renderHeader();
+  const v=$('#view');
+  v.innerHTML=S.tab==='market'?viewMarket():S.tab==='mine'?viewMine():S.tab==='chats'?viewChats():viewStats();
+  const m=$('#msgs');if(m)m.scrollTop=m.scrollHeight;
+  if(S.tab==='chats'&&S.active){const c=chatById(S.active);if(c&&c.unread){c.unread=false;renderHeader()}}
+}
+
+/* --- Події --- */
+document.addEventListener('click',e=>{
+  if(e.target.id==='ov'){closeModal();return}
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act;
+  if(a==='tab'){S.tab=b.dataset.t;closeModal();confirmReset=false;render()}
+  else if(a==='brand'){F.brand=b.dataset.v;F.model='all';render()}
+  else if(a==='open')openModal(+b.dataset.id);
+  else if(a==='close')closeModal();
+  else if(a==='chatListing')openBuyChat(+b.dataset.id);
+  else if(a==='chat'){S.active=+b.dataset.id;const c=chatById(S.active);if(c)c.unread=false;save();render()}
+  else if(a==='back'){S.active=null;render()}
+  else if(a==='opt'){
+    const c=chatById(+b.dataset.cid);if(!c)return;
+    const k=b.dataset.k,v=+b.dataset.v;
+    c.kind==='buy'?buyAct(c,k,v):sellAct(c,k,v);
+  }
+  else if(a==='custom'){
+    const c=chatById(+b.dataset.cid),inp=$('#cu-'+b.dataset.cid);if(!c||!inp)return;
+    const v=+inp.value;
+    c.kind==='buy'?buyAct(c,'customOffer',v):sellAct(c,'customCounter',v);
+  }
+  else if(a==='exp'){const t=$('#sv');if(t){t.value=JSON.stringify(S);t.select();try{document.execCommand('copy')}catch(e){}toast('Код збереження в полі, скопіюй його')}}
+  else if(a==='imp'){try{const o=JSON.parse($('#sv').value);if(!o||typeof o.money!=='number'||!Array.isArray(o.phones))throw 0;S=o;(S.chats||[]).forEach(c=>{c.busy=false});migrate();S.tab='stats';S.active=null;save();render();toast('Збереження завантажено')}catch(e){toast('Не вдалося прочитати збереження')}}
+  else if(a==='swapOffer'){const c=chatById(+b.dataset.cid),sel=$('#sp-'+b.dataset.cid),inp=$('#sx-'+b.dataset.cid);if(!c||!sel)return;swapOffer(c,+sel.value,inp&&inp.value!==''?r50(+inp.value):null)}
+  else if(a==='customSw'){const c=chatById(+b.dataset.cid),inp=$('#cs-'+b.dataset.cid);if(!c||!inp)return;if(inp.value==='')return toast('Введи суму');swapCustom(c,r50(+inp.value))}
+  else if(a==='list'){const inp=$('#pi-'+b.dataset.uid);listPhone(+b.dataset.uid,+inp.value)}
+  else if(a==='unlist')unlistPhone(+b.dataset.uid);
+  else if(a==='pawn')pawn(+b.dataset.uid);
+  else if(a==='repair')repair(+b.dataset.uid,b.dataset.w);
+  else if(a==='next')nextDay();
+  else if(a==='reset'){confirmReset=true;render()}
+  else if(a==='resetNo'){confirmReset=false;render()}
+  else if(a==='reset2'){confirmReset=false;newState();S.tab='stats';save();render();toast('Нова гра: '+fmt(START_MONEY)+' на старті')}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='fModel'){F.model=t.value;render()}
+  else if(t.id==='fSort'){F.sort=t.value;render()}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if(e.key==='Enter'&&e.target.matches&&e.target.matches('.custom input')){const b=e.target.parentNode.querySelector('button');if(b)b.click()}
+});
+$('#q').addEventListener('input',e=>{F.q=e.target.value.trim();if(S.tab!=='market')S.tab='market';render()});
+
+/* --- Старт --- */
+(function boot(){
+  if(!load())newState();else migrate();
+  S.tab=S.tab||'market';
+  const btn=document.createElement('button');
+  btn.className='btn acc sm';btn.dataset.act='next';btn.textContent='Наступний день ▶';
+  document.querySelector('.chips-top').appendChild(btn);
+  render();
+})();
+</script>
+
+</body></html>
